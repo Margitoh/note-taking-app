@@ -26,12 +26,12 @@ class SidebarComponent extends React.Component {
     console.log(this.state);
   };
 
-  selectNote = () => {};
+  selectNote = (note, index) => this.props.selectNote(note, index);
 
-  deleteNote = () => {};
+  deleteNote = () => console.log("delete note");
 
   render() {
-    const { notes, classes, selectedNote } = this.props;
+    const { notes, classes, selectedNoteIndex } = this.props;
 
     if (notes) {
       return (
@@ -62,7 +62,7 @@ class SidebarComponent extends React.Component {
                   <SidebarItemComponent
                     _note={_note}
                     _index={_index}
-                    selectedNoteIndex={this.state.selectedNoteIndex}
+                    selectedNoteIndex={selectedNoteIndex}
                     selectNote={this.selectNote}
                     deleteNote={this.deleteNote}
                   />

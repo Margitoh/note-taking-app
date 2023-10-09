@@ -7,12 +7,28 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import { removeHTMLTags } from "../helpers";
 
 class SidebarItemComponent extends React.Component {
-  selectNote = (note, index) => this.props.selectNote(note, index);
+  state = {
+    isClicked: false,
+  };
+
+  selectNote = (note, index) => {
+    this.setState({ isClicked: true });
+
+    // Reset the isClicked state after a short delay (e.g., 300ms)
+    setTimeout(() => {
+      this.setState({ isClicked: false });
+      this.props.selectNote(note, index);
+    }, 300);
+  };
 
   deleteNote = (note) => {
     if (window.confirm(`Confirm delete: ${note.title}`)) {
       this.props.deleteNote(note);
     }
+  };
+
+  handleListItemMouseDown = (note, index) => {
+    this.selectNote(note, index);
   };
 
   render() {
@@ -21,9 +37,12 @@ class SidebarItemComponent extends React.Component {
     return (
       <div key={_index}>
         <ListItem
-          className={classes.listItem}
+          className={`${classes.listItem} ${
+            selectedNoteIndex === _index ? classes.selectedItem : ""
+          } ${this.state.isClicked ? classes.clickedItem : ""}`}
           selected={selectedNoteIndex === _index}
           alignItems="flex-start"
+          onMouseDown={() => this.handleListItemMouseDown(_note, _index)}
         >
           <div
             className={classes.textSection}

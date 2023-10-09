@@ -25,7 +25,7 @@ body,
 .ql-container {
   box-sizing: border-box;
   height: calc(100% - 42px);
-  overflow-y: scroll;
+  /*overflow-y: scroll;*/
 }
 .ql-editor {
   cursor: text;

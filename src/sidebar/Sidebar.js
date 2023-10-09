@@ -15,7 +15,15 @@ class SidebarComponent extends React.Component {
   }
 
   newNoteBtnClick = () => {
-    this.setState({ title: null, addingNote: !this.state.addingNote });
+    if (this.state.addingNote) {
+      this.setState({ title: null, addingNote: false });
+    } else {
+      this.setState({ addingNote: true }, () => {
+        if (this.noteInput) {
+          this.noteInput.focus();
+        }
+      });
+    }
   };
 
   updateTitle = (txt) => {
@@ -23,12 +31,13 @@ class SidebarComponent extends React.Component {
   };
 
   newNote = () => {
-    console.log(this.state);
+    this.props.newNote(this.state.title);
+    this.setState({ title: null, addingNote: false });
   };
 
   selectNote = (note, index) => this.props.selectNote(note, index);
 
-  deleteNote = () => console.log("delete note");
+  deleteNote = (note) => this.props.deleteNote(note);
 
   render() {
     const { notes, classes, selectedNoteIndex } = this.props;
@@ -46,6 +55,12 @@ class SidebarComponent extends React.Component {
                 className={classes.newNoteInput}
                 placeholder="Enter note title"
                 onKeyUp={(e) => this.updateTitle(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    this.newNote();
+                  }
+                }}
+                ref={(input) => (this.noteInput = input)}
               ></input>
               <Button
                 className={classes.newNoteSubmitBtn}

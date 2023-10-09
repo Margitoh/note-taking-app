@@ -52,10 +52,10 @@ class EditorComponent extends React.Component {
       body: this.state.text,
     });
 
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 500));
 
     this.setState({ isLoading: false });
-  }, 1500);
+  }, 1000);
 
   updateTitle = async (txt) => {
     await this.setState({ title: txt });

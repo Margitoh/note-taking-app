@@ -18,17 +18,13 @@ class SidebarItemComponent extends React.Component {
     setTimeout(() => {
       this.setState({ isClicked: false });
       this.props.selectNote(note, index);
-    }, 300);
+    }, 200);
   };
 
   deleteNote = (note) => {
     if (window.confirm(`Confirm delete: ${note.title}`)) {
       this.props.deleteNote(note);
     }
-  };
-
-  handleListItemMouseDown = (note, index) => {
-    this.selectNote(note, index);
   };
 
   render() {
@@ -42,7 +38,7 @@ class SidebarItemComponent extends React.Component {
           } ${this.state.isClicked ? classes.clickedItem : ""}`}
           selected={selectedNoteIndex === _index}
           alignItems="flex-start"
-          onMouseDown={() => this.handleListItemMouseDown(_note, _index)}
+          onClick={() => this.props.selectNote(_note, _index)}
         >
           <div
             className={classes.textSection}

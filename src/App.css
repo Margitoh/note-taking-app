@@ -25,7 +25,20 @@ body,
 .ql-container {
   box-sizing: border-box;
   height: calc(100% - 42px);
-  /*overflow-y: scroll;*/
+  overflow-y: scroll;
+}
+.ql-container::-webkit-scrollbar {
+  width: 10px;
+}
+.ql-container::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+.ql-container::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 6px;
+}
+.ql-container::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 .ql-editor {
   cursor: text;

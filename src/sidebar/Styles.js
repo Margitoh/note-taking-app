@@ -2,7 +2,7 @@ const styles = (theme) => ({
   root: {
     backgroundColor: theme.palette.background.paper,
     height: "calc(100% - 35px)",
-    position: "absolute",
+    position: "relative",
     left: "0",
     width: "300px",
     boxShadow: "0px 0px 2px black",
@@ -34,9 +34,22 @@ const styles = (theme) => ({
     height: "100%",
     boxSizing: "border-box",
     float: "left",
-    /*overflowY: "scroll",*/
+    overflowY: "scroll",
     overflowX: "hidden",
     boxShadow: "1px 2px 9px #29487d",
+    "&::-webkit-scrollbar": {
+      width: "10px",
+    },
+    "&::-webkit-scrollbar-track": {
+      background: "#f1f1f1",
+    },
+    "&::-webkit-scrollbar-thumb": {
+      background: "#888",
+      borderRadius: "6px",
+    },
+    "&::-webkit-scrollbar-thumb:hover": {
+      background: "#555",
+    },
   },
   newNoteInput: {
     width: "100%",

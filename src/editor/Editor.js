@@ -57,6 +57,11 @@ class EditorComponent extends React.Component {
     this.setState({ isLoading: false });
   }, 1500);
 
+  updateTitle = async (txt) => {
+    await this.setState({ title: txt });
+    this.update();
+  };
+
   render() {
     const { classes } = this.props;
 
@@ -67,6 +72,14 @@ class EditorComponent extends React.Component {
             <CircularProgress size={40} thickness={4} />
           </div>
         )}
+
+        <BorderColorIcon className={classes.editIcon} />
+        <input
+          className={classes.titleInput}
+          placeholder="Note title..."
+          value={this.state.title ? this.state.title : ""}
+          onChange={(e) => this.updateTitle(e.target.value)}
+        ></input>
 
         <ReactQuill
           style={{ height: "100%" }}

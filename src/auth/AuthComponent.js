@@ -30,6 +30,7 @@ class AuthComponent extends React.Component {
     onAuthStateChanged(auth, (user) => {
       if (user) {
         this.setState({ user });
+        this.props.setUserUID(user.uid);
       } else {
         this.setState({ user: null });
       }

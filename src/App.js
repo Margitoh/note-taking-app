@@ -50,6 +50,10 @@ class App extends React.Component {
     }
   };
 
+  setUserUID = (uid) => {
+    this.setState({ userUID: uid });
+  };
+
   render() {
     return (
       <Router>
@@ -62,6 +66,7 @@ class App extends React.Component {
                 path="/"
                 element={
                   <AuthComponent
+                    setUserUID={this.setUserUID}
                     signUp={this.handleSignUp}
                     signIn={this.handleSignIn}
                   />

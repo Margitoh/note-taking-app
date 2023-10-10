@@ -10,20 +10,17 @@ import {
   serverTimestamp,
   addDoc,
   deleteDoc,
+  query,
+  where,
 } from "firebase/firestore";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 import SidebarComponent from "../sidebar/Sidebar";
 import EditorComponent from "../editor/Editor";
 import UserPanel from "../user/UserPanel";
 
 const firebaseConfig = {
-  /*use own code provided by firebase*/
-  apiKey: "AIzaSyCLeiJqW2Qp9D94_seubi4qFNzKEIk5Ee8",
-  authDomain: "note-taking-app-d1d08.firebaseapp.com",
-  projectId: "note-taking-app-d1d08",
-  storageBucket: "note-taking-app-d1d08.appspot.com",
-  messagingSenderId: "459716148021",
-  appId: "1:459716148021:web:f92d718a84cad731afaa7c",
+  /* Use your own Firebase configuration */
 };
 
 const app = initializeApp(firebaseConfig);
@@ -33,24 +30,54 @@ class MainComponent extends React.Component {
   constructor() {
     super();
     this.state = {
+      userUID: null,
       selectedNoteIndex: null,
       selectedNote: null,
       notes: null,
     };
   }
 
+  setUserUID = (uid) => {
+    this.setState({ userUID: uid }, () => {
+      this.fetchNotes();
+    });
+  };
+
+  fetchNotes = () => {
+    const { userUID } = this.state;
+
+    if (!userUID) return;
+
+    const notesCollection = collection(db, "notes");
+    const userQuery = query(notesCollection, where("uid", "==", userUID));
+
+    onSnapshot(userQuery, (snapshot) => {
+      const notes = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        data["id"] = doc.id;
+        return data;
+      });
+
+      this.setState({ notes: notes });
+    });
+  };
+
   selectNote = (note, index) =>
     this.setState({ selectedNoteIndex: index, selectedNote: note });
 
   async newNote(title) {
+    const { userUID } = this.state;
+
     const note = {
       title: title,
       body: "",
+      uid: userUID,
     };
 
     const newNoteRef = await addDoc(collection(db, "notes"), {
       title: note.title,
       body: note.body,
+      uid: note.uid,
       timestamp: serverTimestamp(),
     });
 
@@ -134,7 +161,7 @@ class MainComponent extends React.Component {
             selectNote={this.selectNote}
             newNote={this.newNote.bind(this)}
           />
-          <UserPanel />
+          <UserPanel setUserUID={this.setUserUID} />
 
           {this.state.selectedNote && (
             <EditorComponent
@@ -150,19 +177,14 @@ class MainComponent extends React.Component {
   }
 
   componentDidMount = () => {
-    const notesCollection = collection(db, "notes");
+    const auth = getAuth();
 
-    onSnapshot(notesCollection, (snapshot) => {
-      const notes = snapshot.docs.map((doc) => {
-        const data = doc.data();
-        data["id"] = doc.id;
-        return data;
-      });
-
-      notes.sort((a, b) => b.timestamp - a.timestamp);
-
-      console.log(notes);
-      this.setState({ notes: notes });
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        this.setUserUID(user.uid);
+      } else {
+        this.setState({ userUID: null });
+      }
     });
   };
 }

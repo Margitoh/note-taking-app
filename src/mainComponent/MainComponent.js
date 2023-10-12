@@ -21,6 +21,13 @@ import UserPanel from "../user/UserPanel";
 
 const firebaseConfig = {
   /* Use your own Firebase configuration */
+  apiKey: "AIzaSyCLeiJqW2Qp9D94_seubi4qFNzKEIk5Ee8",
+  authDomain: "note-taking-app-d1d08.firebaseapp.com",
+  projectId: "note-taking-app-d1d08",
+  storageBucket: "note-taking-app-d1d08.appspot.com",
+  messagingSenderId: "459716148021",
+  appId: "1:459716148021:web:f92d718a84cad731afaa7c",
+  measurementId: "G-DTY19GWLR3",
 };
 
 const app = initializeApp(firebaseConfig);
@@ -33,7 +40,7 @@ class MainComponent extends React.Component {
       userUID: null,
       selectedNoteIndex: null,
       selectedNote: null,
-      notes: null,
+      notes: [],
     };
   }
 
@@ -58,6 +65,9 @@ class MainComponent extends React.Component {
         return data;
       });
 
+      // Sort the notes by timestamp
+      notes.sort((a, b) => b.timestamp - a.timestamp);
+
       this.setState({ notes: notes });
     });
   };
@@ -77,8 +87,8 @@ class MainComponent extends React.Component {
     const newNoteRef = await addDoc(collection(db, "notes"), {
       title: note.title,
       body: note.body,
-      uid: note.uid,
       timestamp: serverTimestamp(),
+      uid: note.uid,
     });
 
     const newID = newNoteRef.id;
@@ -178,6 +188,20 @@ class MainComponent extends React.Component {
 
   componentDidMount = () => {
     const auth = getAuth();
+    const notesCollection = collection(db, "notes");
+
+    onSnapshot(notesCollection, (snapshot) => {
+      const notes = snapshot.docs.map((doc) => {
+        const data = doc.data();
+        data["id"] = doc.id;
+        return data;
+      });
+
+      // Sort the notes by timestamp
+      notes.sort((a, b) => b.timestamp - a.timestamp);
+
+      this.setState({ notes: notes });
+    });
 
     onAuthStateChanged(auth, (user) => {
       if (user) {
